@@ -39,5 +39,7 @@ public class CourseEntity {
      * A list with the students that have been enrolled in this course.
      * No student should appear more than once in this list
      */
-    // TODO
+    @PodamExclude
+    @ManyToMany(mappedBy = "courses")
+    private List<StudentEntity> students = new ArrayList<StudentEntity>();
 }
