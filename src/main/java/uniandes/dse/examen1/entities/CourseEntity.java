@@ -3,11 +3,14 @@ package uniandes.dse.examen1.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 import uk.co.jemos.podam.common.PodamExclude;
 
@@ -42,4 +45,8 @@ public class CourseEntity {
     @PodamExclude
     @ManyToMany(mappedBy = "courses")
     private List<StudentEntity> students = new ArrayList<StudentEntity>();
+
+    @PodamExclude
+    @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<RecordEntity> records = new ArrayList<RecordEntity>();
 }

@@ -33,7 +33,7 @@ public class RecordEntity {
     private StudentEntity student;
 
     @PodamExclude
-    @OneToOne
+    @ManyToOne
     private CourseEntity course;
 
 }
