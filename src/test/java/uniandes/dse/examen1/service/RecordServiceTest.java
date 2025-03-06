@@ -1,6 +1,7 @@
 package uniandes.dse.examen1.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
@@ -65,10 +66,16 @@ public class RecordServiceTest {
 
     /**
      * Tests the normal creation of a record for a student in a course
-     */
+          * @throws InvalidRecordException 
+          */
     @Test
-    void testCreateRecord() {
-        // TODO
+    void testCreateRecord() throws InvalidRecordException {
+        RecordEntity record = recordService.createRecord(login, courseCode, 4.0, "1");
+
+        assertEquals(courseRepository.findByCourseCode(courseCode).get(), record.getCourse(), "El curso en el record no coincide con el curso esperado");
+        assertEquals(studentRepository.findByLogin(login).get(), record.getStudent(), "El estudiante del record no es el esperado");
+        assertEquals(4.0, record.getFinalGrade(), "La nota del record no es la esperada");
+        assertEquals("1", record.getSemester(), "El semestre del record no es el esperado");
     }
 
     /**
@@ -76,7 +83,9 @@ public class RecordServiceTest {
      */
     @Test
     void testCreateRecordMissingStudent() {
-        // TODO
+        assertThrows(InvalidRecordException.class,()->{
+            recordService.createRecord("", courseCode, 4.0, "3");
+        });
     }
 
     /**
@@ -84,7 +93,9 @@ public class RecordServiceTest {
      */
     @Test
     void testCreateInscripcionMissingCourse() {
-        // TODO
+        assertThrows(InvalidRecordException.class,()->{
+            recordService.createRecord(login,"", 4.0, "3");
+        });
     }
 
     /**
@@ -92,7 +103,9 @@ public class RecordServiceTest {
      */
     @Test
     void testCreateInscripcionWrongGrade() {
-        // TODO
+        assertThrows(InvalidRecordException.class,()->{
+            recordService.createRecord(login,courseCode, 1.0, "3");
+        });
     }
 
     /**
@@ -101,15 +114,25 @@ public class RecordServiceTest {
      */
     @Test
     void testCreateInscripcionRepetida1() {
-        // TODO
+        assertThrows(InvalidRecordException.class,()->{
+            recordService.createRecord(login,courseCode, 4.0, "3");
+            recordService.createRecord(login,courseCode, 3.0, "4");
+        });
     }
 
     /**
      * Tests the creation of a record when the student already has a record for the
      * course, but he has not passed the course yet.
-     */
+          * @throws InvalidRecordException 
+          */
     @Test
-    void testCreateInscripcionRepetida2() {
-        // TODO
+    void testCreateInscripcionRepetida2() throws InvalidRecordException {
+        recordService.createRecord(login, courseCode, 1.9, "1");
+        RecordEntity record = recordService.createRecord(login, courseCode, 4.0, "1");
+
+        assertEquals(courseRepository.findByCourseCode(courseCode).get(), record.getCourse(), "El curso en el record no coincide con el curso esperado");
+        assertEquals(studentRepository.findByLogin(login).get(), record.getStudent(), "El estudiante del record no es el esperado");
+        assertEquals(4.0, record.getFinalGrade(), "La nota del record no es la esperada");
+        assertEquals("1", record.getSemester(), "El semestre del record no es el esperado");
     }
 }

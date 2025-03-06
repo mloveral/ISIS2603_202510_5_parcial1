@@ -77,11 +77,19 @@ public class RecordService {
             course.getStudents().add(student);
         }
 
+        if (grade < 1.5 || grade > 5.0)
+        {
+            throw new InvalidRecordException("La nota ingresada es inválida");
+        }
+
         RecordEntity record = new RecordEntity();
         record.setCourse(course);
         record.setStudent(student);
         record.setFinalGrade(grade);
         record.setSemester(semester);
+
+        student.getRecords().add(record);
+        course.getRecords().add(record);
 
         log.info("Finaliza el proceso de crear un nuevo registro");
         return recordRepository.save(record);

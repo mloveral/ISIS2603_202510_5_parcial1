@@ -28,6 +28,6 @@ public class StudentService {
         }
 
         log.info("Finaliza el proceso de crear un nuevo estudiante");
-        return studentRepository.save(newStudent)
+        return studentRepository.save(newStudent);
     }
 }
